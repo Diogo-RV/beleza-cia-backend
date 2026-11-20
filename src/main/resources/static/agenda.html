@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>Mary Correa Nails | Agenda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/detalhes.css">
+</head>
+<body class="corpo">
+    <main class="agenda" id="agendaCard">
+        <header class="topo">
+            <a href="/index.html" class="icone-btn" aria-label="Voltar ao início"><i class="fa-solid fa-house"></i></a>
+            <div class="topo-titulo">
+                <h1>Mary Correa Nails</h1>
+                <span id="boasVindas">Agenda online</span>
+            </div>
+            <button id="logoutBtn" class="botao-sair" type="button">Sair</button>
+        </header>
+
+        <section class="conteudo">
+            <div id="avisoAgenda" class="aviso-agenda" role="status"></div>
+
+            <div id="adminWorkspace" class="admin-workspace">
+                <section id="areaAgendamento" class="area-agendamento">
+                    <h2 id="tituloCalendario" class="titulo-secao">Agende seu horário</h2>
+                    <div id="selecaoServico">
+                        <label class="label-servico" for="servicoSelect">Escolha o serviço</label>
+                        <select id="servicoSelect" class="select-servico">
+                            <option value="">Carregando serviços...</option>
+                        </select>
+                    </div>
+
+                    <p id="instrucaoCalendario" class="instrucao">Selecione o dia desejado</p>
+                    <div class="navegacao-mes">
+                        <button id="mesAnterior" class="seta2" type="button" aria-label="Mês anterior"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 id="mesAno"></h2>
+                        <button id="proximoMes" class="seta2" type="button" aria-label="Próximo mês"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="dias-semana">
+                        <span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span>
+                    </div>
+                    <div id="dias" class="dias"></div>
+
+                    <div id="legendaAdmin" class="legenda-admin" hidden>
+                        <span><i class="legenda-ponto legenda-selecionado"></i> Data selecionada</span>
+                        <span><i class="legenda-ponto legenda-atendimento"></i> Atendimento confirmado</span>
+                        <span><i class="legenda-ponto legenda-concluido"></i> Atendimento concluído</span>
+                        <span><i class="legenda-ponto legenda-cancelamento"></i> Há cancelamento</span>
+                        <span><i class="legenda-ponto legenda-bloqueio"></i> Possui bloqueio</span>
+                    </div>
+                </section>
+
+                <aside id="adminColuna" class="admin-coluna" hidden>
+                    <section class="admin-dia-card">
+                        <header class="admin-card-header">
+                            <div>
+                                <span class="admin-kicker">VISÃO DO DIA</span>
+                                <h2>Atendimentos</h2>
+                            </div>
+                            <span id="adminDataSelecionada" class="admin-data-selecionada">Selecione uma data</span>
+                            <button id="atualizarAgendaAdminBtn" class="botao-admin-atualizar" type="button" title="Atualizar os atendimentos">Atualizar</button>
+                        </header>
+                        <div class="admin-contadores">
+                            <div class="admin-contador">
+                                <strong id="contagemConfirmados">0</strong>
+                                <span>Confirmados</span>
+                            </div>
+                            <div class="admin-contador admin-contador-cancelados">
+                                <strong id="contagemCancelados">0</strong>
+                                <span>Cancelados</span>
+                            </div>
+                        </div>
+                        <div class="admin-filtros" role="group" aria-label="Filtrar atendimentos">
+                            <button type="button" class="admin-filtro ativo" data-admin-filtro="confirmados" aria-pressed="true">Confirmados</button>
+                            <button type="button" class="admin-filtro" data-admin-filtro="cancelados" aria-pressed="false">Cancelados</button>
+                            <button type="button" class="admin-filtro" data-admin-filtro="concluidos" aria-pressed="false">Concluídos</button>
+                            <button type="button" class="admin-filtro" data-admin-filtro="todos" aria-pressed="false">Todos</button>
+                        </div>
+                        <div id="adminAgendamentosDia" class="admin-agendamentos-dia" aria-live="polite">
+                            <p class="admin-vazio">Selecione um dia no calendário para visualizar os atendimentos.</p>
+                        </div>
+                        <div class="admin-historico-atalho">
+                            <button id="abrirHistoricoAdminBtn" class="botao-admin-historico" type="button" aria-expanded="false">
+                                <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                                Ver histórico completo
+                            </button>
+                        </div>
+                    </section>
+
+                    <section id="painelHistoricoAdmin" class="painel-historico-admin" hidden>
+                        <header class="historico-admin-cabecalho">
+                            <div>
+                                <span class="admin-kicker">CONSULTA DE REGISTROS</span>
+                                <h2>Histórico de atendimentos</h2>
+                                <p>Registros anteriores e cancelamentos. O histórico é preservado e carregado em páginas.</p>
+                            </div>
+                            <button id="fecharHistoricoAdminBtn" class="botao-admin-atualizar" type="button">Fechar</button>
+                        </header>
+                        <div class="historico-admin-filtros">
+                            <label>Status
+                                <select id="historicoStatusFiltro">
+                                    <option value="todos">Todos</option>
+                                    <option value="concluidos">Concluídos</option>
+                                    <option value="cancelados">Cancelados</option>
+                                </select>
+                            </label>
+                            <label>De
+                                <input id="historicoInicioFiltro" type="date">
+                            </label>
+                            <label>Até
+                                <input id="historicoFimFiltro" type="date">
+                            </label>
+                            <button id="filtrarHistoricoAdminBtn" class="botao-admin botao-admin-principal" type="button">Filtrar</button>
+                        </div>
+                        <p id="resumoHistoricoAdmin" class="historico-admin-resumo" aria-live="polite">Abra o histórico para consultar os registros.</p>
+                        <div id="listaHistoricoAdmin" class="lista-historico-admin" aria-live="polite">
+                            <p class="admin-vazio">O histórico ainda não foi carregado.</p>
+                        </div>
+                        <div class="paginacao-historico-admin">
+                            <button id="historicoAnteriorBtn" class="botao-admin-atualizar" type="button" disabled>Anterior</button>
+                            <span id="historicoPaginaInfo">Página 0 de 0</span>
+                            <button id="historicoProximoBtn" class="botao-admin-atualizar" type="button" disabled>Próxima</button>
+                        </div>
+                    </section>
+
+                    <section id="painelAdminBloqueios" class="painel-admin-bloqueios" hidden>
+                        <div class="admin-bloqueio-titulo">
+                            <div>
+                                <span class="admin-kicker">DISPONIBILIDADE</span>
+                                <h2>Bloquear horários</h2>
+                            </div>
+                            <i class="fa-regular fa-calendar-xmark" aria-hidden="true"></i>
+                        </div>
+                        <p class="admin-ajuda">Selecione uma data no calendário. Horários com atendimentos confirmados não podem ser bloqueados.</p>
+
+                        <div class="admin-form-bloqueio">
+                            <div class="campo-admin">
+                                <label for="bloqueioInicio">Início</label>
+                                <input id="bloqueioInicio" type="time" step="1800" value="09:00">
+                            </div>
+                            <div class="campo-admin">
+                                <label for="bloqueioFim">Fim</label>
+                                <input id="bloqueioFim" type="time" step="1800" value="10:00">
+                            </div>
+                            <div class="campo-admin admin-campo-motivo">
+                                <label for="bloqueioMotivo">Motivo (opcional)</label>
+                                <input id="bloqueioMotivo" type="text" maxlength="255" placeholder="Ex.: compromisso pessoal">
+                            </div>
+                        </div>
+
+                        <div class="admin-acoes-bloqueio">
+                            <button id="bloquearIntervaloBtn" class="botao-admin botao-admin-principal" type="button">Bloquear intervalo</button>
+                            <button id="bloquearDiaBtn" class="botao-admin" type="button">Bloquear dia inteiro (08h às 17h)</button>
+                        </div>
+                        <p id="mensagemBloqueio" class="mensagem-form" role="status" aria-live="polite"></p>
+
+                        <div class="admin-lista-bloqueios">
+                            <h3>Bloqueios desta data</h3>
+                            <div id="listaBloqueiosDia">
+                                <p>Selecione uma data para consultar os bloqueios.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="painelAdminServicos" class="painel-admin-servicos">
+                        <header class="admin-servicos-cabecalho">
+                            <div>
+                                <span class="admin-kicker">CATÁLOGO</span>
+                                <h2>Gerenciar serviços</h2>
+                                <p>Cadastre serviços e altere nome, preço ou duração.</p>
+                            </div>
+                            <button id="novoServicoBtn" class="botao-admin botao-admin-principal" type="button">Adicionar serviço</button>
+                        </header>
+
+                        <form id="servicoAdminForm" class="form-admin-servico" hidden>
+                            <h3 id="tituloFormServico">Novo serviço</h3>
+                            <input id="servicoAdminNome" type="text" maxlength="120" placeholder="Nome do serviço" required>
+                            <div class="form-admin-servico-duas-colunas">
+                                <label>Preço (R$)
+                                    <input id="servicoAdminPreco" type="number" min="0.01" step="0.01" placeholder="35,00" required>
+                                </label>
+                                <label>Duração (minutos)
+                                    <input id="servicoAdminDuracao" type="number" min="1" step="1" placeholder="30" required>
+                                </label>
+                            </div>
+                            <div class="form-admin-servico-acoes">
+                                <button id="salvarServicoBtn" class="botao-admin botao-admin-principal" type="submit">Salvar serviço</button>
+                                <button id="cancelarEdicaoServicoBtn" class="botao-admin" type="button">Cancelar</button>
+                            </div>
+                        </form>
+                        <p id="mensagemServicoAdmin" class="mensagem-form" role="status" aria-live="polite"></p>
+
+                        <div id="listaServicosAdmin" class="lista-servicos-admin" aria-live="polite">
+                            <p>Carregando serviços...</p>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+
+            <div id="mensagemCalendario" class="mensagem mensagem-calendario">
+                <img class="Img2" src="/coracao.png" alt="Coração">
+                <p>Escolha um dia e um horário disponível para confirmar seu atendimento.</p>
+            </div>
+        </section>
+    </main>
+
+    <aside id="painelClienteHorarios" class="horarios">
+        <header class="topo">
+            <h1>Horários disponíveis</h1>
+        </header>
+        <section class="horarios-conteudo">
+            <div class="data-selecionada">
+                <i class="fa-regular fa-calendar"></i>
+                <div>
+                    <strong id="dataTexto">Selecione uma data</strong>
+                    <span id="diaTexto"></span>
+                </div>
+            </div>
+            <p class="instrucao">Horários livres para o serviço escolhido</p>
+            <div id="listaHorarios" class="lista-horarios"></div>
+            <div id="confirmacaoBox" class="confirmacao-box" hidden>
+                <p id="resumoEscolha"></p>
+                <button id="confirmarAgendamento" class="con botao-confirmar" type="button">Confirmar agendamento</button>
+            </div>
+            <p id="mensagemAgendamento" class="mensagem-form" role="status"></p>
+            <div class="atendimento">
+                <i class="fa-regular fa-clock"></i>
+                <div><strong>Horário de atendimento:</strong><span>08:00 às 12:00 e 13:00 às 17:00</span><span>Não há atendimento aos domingos.</span></div>
+            </div>
+        </section>
+    </aside>
+
+    <section id="painelAgendamentosCliente" class="painel-agendamentos">
+        <header class="topo topo-agendamentos">
+            <h1 id="tituloListaAgendamentos">Meus agendamentos</h1>
+            <button id="alternarEncerradosClienteBtn" class="botao-ver-encerrados" type="button" aria-expanded="false">
+                Mostrar cancelados e concluídos
+            </button>
+        </header>
+        <p id="descricaoAgendamentosCliente" class="descricao-agendamentos-cliente">
+            Aqui aparecem seus atendimentos confirmados de hoje e dos próximos dias.
+        </p>
+        <div id="agendamentosLista" class="lista-agendamentos" aria-live="polite">
+            <p>Carregando seus agendamentos...</p>
+        </div>
+    </section>
+
+    <script src="/agenda.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+# Maven / Java
+/target/
+/build/
+*.class
+*.log
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+.sts4-cache/
+
+# Segredos e configurações locais
+.env
+.env.*
+!.env.example
+application-local.properties
+application-secrets.properties
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Exportações e backups locais
+*.backup
+*.dump
+*.bak
+*.sql.gz
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos auxiliares locais
+classpath.txt
+HELP.md

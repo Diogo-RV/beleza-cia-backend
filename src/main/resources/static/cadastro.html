@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Correa Nails | Cadastro</title>
+    <link rel="stylesheet" href="/detalhes.css">
+</head>
+<body class="fundo1 pagina-auth">
+    <main class="cartao-auth cartao-cadastro">
+        <a class="voltar-auth" href="/index.html">← Voltar</a>
+        <img class="Img1" src="/imga.png" alt="Mary Correa Nails">
+        <p class="times">MARY CORREA NAILS</p>
+        <p class="subtitulo-marca">CRIE SUA CONTA</p>
+        <p class="coracao">♥</p>
+        <h1>Cadastro</h1>
+        <p class="texto-auth">Preencha seus dados para começar a agendar.</p>
+
+        <form id="cadastroForm" class="form-auth">
+            <label for="nome">Nome completo</label>
+            <input id="nome" name="nome" type="text" class="caixaTexto" placeholder="Seu nome" autocomplete="name" required maxlength="120">
+
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" class="caixaTexto" placeholder="seuemail@exemplo.com" autocomplete="email" required maxlength="255">
+
+            <label for="cpf">CPF</label>
+            <input id="cpf" name="cpf" type="text" class="caixaTexto" placeholder="Somente números ou com pontuação" inputmode="numeric" maxlength="14" required>
+
+            <label for="senha">Senha</label>
+            <input id="senha" name="senha" type="password" class="caixaTexto" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" minlength="8" maxlength="72" required>
+
+            <label for="confirmarSenha">Confirmar senha</label>
+            <input id="confirmarSenha" name="confirmarSenha" type="password" class="caixaTexto" placeholder="Digite a senha novamente" autocomplete="new-password" minlength="8" maxlength="72" required>
+
+            <button type="submit" class="con botao-auth">Cadastrar</button>
+            <p id="cadastroMensagem" class="mensagem-form" role="alert"></p>
+        </form>
+        <p>Já possui uma conta? <a href="/index.html">Faça login</a></p>
+    </main>
+    <script src="/auth.js"></script>
+</body>
+</html>

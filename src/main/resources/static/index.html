@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Correa Nails | Entrar</title>
+    <link rel="stylesheet" href="/detalhes.css">
+</head>
+<body class="fundo1 pagina-auth">
+    <main class="cartao-auth">
+        <img class="Img1" src="/imga.png" alt="Mary Correa Nails">
+        <p class="times">MARY CORREA NAILS</p>
+        <p class="subtitulo-marca">AGENDA ONLINE</p>
+        <p class="coracao">♥</p>
+        <h1>Bem-vinda de volta!</h1>
+        <p class="texto-auth">Entre com seu e-mail e sua senha para continuar.</p>
+
+        <form id="loginForm" class="form-auth">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" class="caixaTexto" placeholder="seuemail@exemplo.com" autocomplete="email" required>
+
+            <label for="senha">Senha</label>
+            <input id="senha" name="senha" type="password" class="caixaTexto" placeholder="Sua senha" autocomplete="current-password" required>
+
+            <button type="submit" class="con botao-auth">Entrar</button>
+            <p id="loginMensagem" class="mensagem-form" role="alert"></p>
+        </form>
+
+        <div class="divisor-auth"><span>ou</span></div>
+        <p>Não tem uma conta? <a href="/cadastro.html">Cadastre-se</a></p>
+    </main>
+    <script src="/auth.js"></script>
+</body>
+</html>
