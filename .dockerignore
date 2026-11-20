@@ -1,0 +1,14 @@
+
+.git
+.github
+.vscode
+.idea
+target
+build
+.env
+.env.*
+*.backup
+*.dump
+*.log
+*.pem
+*.key
