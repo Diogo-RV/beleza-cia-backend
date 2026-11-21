@@ -294,7 +294,7 @@
     async function excluirServicoAdmin(id) {
         const servico = servicos.find(item => Number(item.id) === Number(id));
         if (!servico) return;
-        if (!window.confirm(`Deseja excluir o serviço "${servico.nome}"? Serviços ligados a agendamentos não podem ser excluídos.`)) return;
+        if (!window.confirm(`Deseja remover o serviço "${servico.nome}" do catálogo? Agendamentos cancelados e concluídos continuarão no histórico. Se houver atendimentos confirmados, a remoção será impedida.`)) return;
         try {
             const token = await obterTokenCsrf();
             await api(`/api/servicos/${id}`, {
@@ -303,7 +303,7 @@
             });
             await carregarServicos();
             renderizarServicosAdmin();
-            mensagemServicoAdmin.textContent = 'Serviço excluído.';
+            mensagemServicoAdmin.textContent = 'Serviço removido do catálogo. O histórico foi preservado.';
             if (servicoEditandoId === Number(id)) fecharFormServico();
         } catch (erro) {
             mensagemServicoAdmin.textContent = erro.message;

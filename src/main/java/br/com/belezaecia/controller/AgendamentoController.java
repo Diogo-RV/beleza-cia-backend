@@ -1,14 +1,15 @@
 package br.com.belezaecia.controller;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,14 +20,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.belezaecia.dto.AgendamentoRequest;
-import br.com.belezaecia.service.AgendamentoPolicy;
 import br.com.belezaecia.service.AgendaTransactionService;
+import br.com.belezaecia.service.AgendamentoPolicy;
 import jakarta.validation.Valid;
 
 @RestController
@@ -560,7 +560,7 @@ public class AgendamentoController {
     // BUSCAR DURAÇÃO DO SERVIÇO
     private Integer buscarDuracao(Integer servicoId) {
         List<Integer> resultado = jdbcTemplate.query(
-            "SELECT duracao_minutos FROM servicos WHERE id = ?",
+            "SELECT duracao_minutos FROM servicos WHERE id = ? AND ativo = TRUE",
             (rs, rowNum) -> rs.getInt("duracao_minutos"),
             servicoId
         );

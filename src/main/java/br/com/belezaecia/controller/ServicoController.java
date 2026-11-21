@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,7 +42,7 @@ public class ServicoController {
     public List<Map<String, Object>> listarServicos() {
 
         String sql = "SELECT id, nome, preco, duracao_minutos " +
-                     "FROM servicos ORDER BY id";
+                     "FROM servicos WHERE ativo = TRUE ORDER BY id";
 
         return jdbcTemplate.queryForList(sql);
     }
@@ -54,7 +53,7 @@ public class ServicoController {
             @PathVariable Integer id) {
 
         String sql = "SELECT id, nome, preco, duracao_minutos " +
-                     "FROM servicos WHERE id = ?";
+                     "FROM servicos WHERE id = ? AND ativo = TRUE";
 
         List<Map<String, Object>> resultado =
                 jdbcTemplate.queryForList(sql, id);
@@ -108,7 +107,7 @@ public class ServicoController {
             Integer id,
             ServicoRequest servico) {
         List<Integer> duracoesAtuais = jdbcTemplate.query(
-                "SELECT duracao_minutos FROM servicos WHERE id = ? FOR UPDATE",
+                "SELECT duracao_minutos FROM servicos WHERE id = ? AND ativo = TRUE FOR UPDATE",
                 (rs, rowNum) -> rs.getInt("duracao_minutos"),
                 id
         );
@@ -132,7 +131,7 @@ public class ServicoController {
         }
 
         String sql = "UPDATE servicos SET nome = ?, preco = ?, " +
-                     "duracao_minutos = ? WHERE id = ?";
+                     "duracao_minutos = ? WHERE id = ? AND ativo = TRUE";
 
         jdbcTemplate.update(
                 sql,
@@ -143,7 +142,7 @@ public class ServicoController {
         );
 
         String consulta = "SELECT id, nome, preco, duracao_minutos " +
-                          "FROM servicos WHERE id = ?";
+                          "FROM servicos WHERE id = ? AND ativo = TRUE";
 
         Map<String, Object> atualizado =
                 jdbcTemplate.queryForMap(consulta, id);
@@ -220,7 +219,7 @@ public class ServicoController {
         return Boolean.TRUE.equals(conflito);
     }
 
-    // EXCLUIR SERVIÇO
+    // REMOVER SERVIÇO DO CATÁLOGO, SEM APAGAR O HISTÓRICO
     @DeleteMapping("/api/servicos/{id}")
     public ResponseEntity<?> excluirServico(@PathVariable Integer id) {
         return agendaTransactionService.executarComTrava(
@@ -228,27 +227,48 @@ public class ServicoController {
         );
     }
 
-    private ResponseEntity<?> excluirServicoComTrava(Integer id) {
-        try {
+    // O agendamento cancelado ou concluído não ocupa horário e permanece
+    // no banco com seu serviço original para fins de histórico.
+    // A trava transacional serializa esta alteração com novas reservas.
+    ResponseEntity<?> excluirServicoComTrava(Integer id) {
+        Boolean servicoAtivo = jdbcTemplate.queryForObject(
+            "SELECT EXISTS (" +
+            " SELECT 1 FROM servicos WHERE id = ? AND ativo = TRUE" +
+            ")",
+            Boolean.class,
+            id
+        );
 
-            int linhas = jdbcTemplate.update(
-                    "DELETE FROM servicos WHERE id = ?", id
-            );
-
-            if (linhas == 0) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.noContent().build();
-
-        } catch (DataIntegrityViolationException e) {
-
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(Map.of(
-                        "erro",
-                        "Não é possível excluir este serviço porque ele está associado a um agendamento."
-                    ));
+        if (!Boolean.TRUE.equals(servicoAtivo)) {
+            return ResponseEntity.notFound().build();
         }
+
+        Boolean possuiAgendamentosPendentes = jdbcTemplate.queryForObject(
+            "SELECT EXISTS (" +
+            " SELECT 1 FROM agendamentos " +
+            " WHERE servico_id = ? " +
+            " AND LOWER(BTRIM(COALESCE(status, 'confirmado'))) " +
+            " NOT IN ('cancelado', 'concluido')" +
+            ")",
+            Boolean.class,
+            id
+        );
+
+        if (Boolean.TRUE.equals(possuiAgendamentosPendentes)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "erro",
+                "Este serviço ainda possui atendimentos confirmados. " +
+                "Cancele ou conclua esses atendimentos antes de removê-lo do catálogo."
+            ));
+        }
+
+        // Exclusão lógica: o serviço desaparece para novos agendamentos,
+        // mas os registros cancelados e concluídos continuam referenciando-o.
+        jdbcTemplate.update(
+            "UPDATE servicos SET ativo = FALSE WHERE id = ? AND ativo = TRUE",
+            id
+        );
+
+        return ResponseEntity.noContent().build();
     }
 }
