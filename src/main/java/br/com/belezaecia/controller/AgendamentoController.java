@@ -138,13 +138,13 @@ public class AgendamentoController {
                     Map.of("erro", "Informe as datas inicial e final do período.")
                 );
             }
-            if (inicio != null && fim.isBefore(inicio)) {
+            if (inicio != null && fim != null && fim.isBefore(inicio)) {
                 return ResponseEntity.badRequest().body(
                     Map.of("erro", "A data final não pode ser anterior à inicial.")
                 );
             }
 
-            if (inicio != null) {
+            if (inicio != null && fim != null) {
                 return ResponseEntity.ok(jdbcTemplate.queryForList(
                     CONSULTA + "WHERE a.data_hora >= ? AND a.data_hora < ? " +
                     "ORDER BY a.data_hora, a.id",
@@ -202,7 +202,7 @@ public class AgendamentoController {
             return ResponseEntity.badRequest()
                 .body(Map.of("erro", "Página inválida ou tamanho fora do limite de 1 a 50 registros."));
         }
-        if ((inicio == null) != (fim == null) || (inicio != null && fim.isBefore(inicio))) {
+        if ((inicio == null) != (fim == null) || (inicio != null && fim != null && fim.isBefore(inicio))) {
             return ResponseEntity.badRequest()
                 .body(Map.of("erro", "Informe um período válido com data inicial e final."));
         }
@@ -227,7 +227,7 @@ public class AgendamentoController {
                     .body(Map.of("erro", "Filtro de status inválido."));
             }
         }
-        if (inicio != null) {
+        if (inicio != null && fim != null) {
             where.append(" AND a.data_hora >= ? AND a.data_hora < ? ");
             parametros.add(inicio.atStartOfDay());
             parametros.add(fim.plusDays(1).atStartOfDay());
